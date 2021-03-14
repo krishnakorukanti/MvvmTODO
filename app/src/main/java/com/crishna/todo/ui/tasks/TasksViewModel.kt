@@ -6,10 +6,13 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.crishna.todo.data.PreferencesManager
 import com.crishna.todo.data.SortOrder
+import com.crishna.todo.data.Task
 import com.crishna.todo.data.TaskDao
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class TasksViewModel @ViewModelInject constructor(
@@ -21,10 +24,14 @@ class TasksViewModel @ViewModelInject constructor(
 
     val preferncesFlow = preferncesManager.preferencesFlow
 
+
+    private val tasksEventChannel = Channel<TasksEvent>()
+    val tasksEvent = tasksEventChannel.receiveAsFlow()
+
     private val taskFlow = combine(
         searchQuery,
-       preferncesFlow
-    ) { query, filterPrefernces->
+        preferncesFlow
+    ) { query, filterPrefernces ->
         Pair(query, filterPrefernces)
 
     }
@@ -32,15 +39,36 @@ class TasksViewModel @ViewModelInject constructor(
         .flatMapLatest { (query, filterPrefernces) ->
             taskDao.getTasks(query, filterPrefernces.sortOrder, filterPrefernces.hideCompleted)
         }
+    val tasks = taskFlow.asLiveData()
+
 
     fun onSortOderSelected(sortOrder: SortOrder) = viewModelScope.launch {
         preferncesManager.updateSortOder(sortOrder)
     }
 
-    fun onHideCompletedClick(hideCompleted : Boolean) = viewModelScope.launch {
+    fun onHideCompletedClick(hideCompleted: Boolean) = viewModelScope.launch {
         preferncesManager.updateHideCompleted(hideCompleted)
     }
 
-    val tasks = taskFlow.asLiveData()
+    fun onTaskSelected(task: Task) {}
+
+    fun onTaskCheckedChanged(task: Task, isChecked: Boolean) = viewModelScope.launch {
+        taskDao.update(task.copy(completed = isChecked))
+    }
+
+    fun onTaskSwiped(task: Task) = viewModelScope.launch {
+        taskDao.delete(task)
+        tasksEventChannel.send(TasksEvent.ShowUndoDeleteTaskMessage(task))
+
+    }
+
+    fun onUndoDeleteClicked(task: Task) = viewModelScope.launch {
+        taskDao.insert(task)
+    }
+
+    sealed class TasksEvent {
+        data class ShowUndoDeleteTaskMessage(val task: Task) : TasksEvent()
+    }
+
 
 }

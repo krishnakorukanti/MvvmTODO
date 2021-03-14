@@ -9,11 +9,30 @@ import androidx.recyclerview.widget.RecyclerView
 import com.crishna.todo.data.Task
 import com.crishna.todo.databinding.ItemTaskBinding
 
-class TasksAdapter : ListAdapter<Task, TasksAdapter.TasksViewHolder>(DiffCallBack()) {
+class TasksAdapter(private val listener : OnItemClickListener) : ListAdapter<Task, TasksAdapter.TasksViewHolder>(DiffCallBack()) {
 
 
-    class TasksViewHolder(private val binding: ItemTaskBinding) :
+  inner  class TasksViewHolder(private val binding: ItemTaskBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.apply {
+                root.setOnClickListener{
+                    val position = adapterPosition
+                    if (position != RecyclerView.NO_POSITION){
+                        val task = getItem(position)
+                        listener.onItemClick(task)
+                    }
+                }
+                checkBoxComplete.setOnClickListener{
+                    val position = adapterPosition
+                    if (position != RecyclerView.NO_POSITION){
+                        val task = getItem(position)
+                        listener.onCheckBoxClicked(task,checkBoxComplete.isChecked)
+                    }
+                }
+            }
+        }
 
         fun bind(task: Task) {
             binding.apply {
@@ -35,6 +54,11 @@ class TasksAdapter : ListAdapter<Task, TasksAdapter.TasksViewHolder>(DiffCallBac
         val currentItem = getItem(position)
         holder.bind(currentItem)
 
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(task: Task)
+        fun onCheckBoxClicked(task: Task, isChecked: Boolean)
     }
 
     class DiffCallBack : DiffUtil.ItemCallback<Task>() {
