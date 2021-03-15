@@ -8,6 +8,24 @@
     <fragment
         android:id="@+id/tasksFragment"
         android:name="com.crishna.todo.ui.tasks.TasksFragment"
-        android:label="fragment_task"
-        tools:layout="@layout/fragment_task" />
+        android:label="Tasks"
+        tools:layout="@layout/fragment_task">
+        <action
+            android:id="@+id/action_tasksFragment_to_addEditFragment2"
+            app:destination="@id/addEditFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addEditFragment"
+        android:name="com.crishna.todo.ui.addedittask.AddEditFragment"
+        android:label="{title}"
+        tools:layout="@layout/fragment_add_edit_task">
+        <argument
+            android:name="task"
+            android:defaultValue="@null"
+            app:argType="com.crishna.todo.data.Task"
+            app:nullable="true" />
+        <argument
+            android:name="title"
+            app:argType="string" />
+    </fragment>
 </navigation>
