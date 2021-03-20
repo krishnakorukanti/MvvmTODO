@@ -1,11 +1,13 @@
 package com.crishna.todo
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.crishna.todo.R.color
 import com.crishna.todo.data.Task
 import com.crishna.todo.databinding.ItemTaskBinding
 
@@ -35,12 +37,16 @@ class TasksAdapter(private val listener: OnItemClickListener) :
             }
         }
 
+        @SuppressLint("ResourceAsColor")
         fun bind(task: Task) {
             binding.apply {
                 checkBoxComplete.isChecked = task.completed
                 textItem.text = task.name
                 textItem.paint.isStrikeThruText = task.completed
                 labelPriority.isVisible = task.important
+                if (task.important){
+                    cardId.setBackgroundColor(color.imp)
+                }
             }
         }
     }

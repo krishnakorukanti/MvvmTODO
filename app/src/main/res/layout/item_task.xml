@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:elevation="10dp"
+    android:layout_margin="8dp"
+
     android:padding="8dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:padding="8dp"
+        android:id="@+id/cardId"
+        android:layout_height="wrap_content">
 
     <CheckBox
         android:id="@+id/checkBoxComplete"
@@ -13,19 +21,20 @@
         android:minWidth="0dp"
         android:minHeight="0dp" />
 
-    <TextView
-        android:id="@+id/textItem"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/checkBoxComplete"
-        android:layout_alignBottom="@id/checkBoxComplete"
-        android:layout_toStartOf="@id/labelPriority"
-        android:layout_toEndOf="@+id/checkBoxComplete"
-        android:textColor="@color/black"
-        android:ellipsize="end"
-        android:gravity="center_vertical"
-        android:maxLines="1"
-        tools:text="Example item" />
+        <TextView
+            android:id="@+id/textItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/checkBoxComplete"
+            android:layout_alignBottom="@id/checkBoxComplete"
+            android:layout_toStartOf="@id/labelPriority"
+            android:layout_toEndOf="@+id/checkBoxComplete"
+
+            android:ellipsize="end"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            tools:text="Example item" />
 
     <ImageView
         android:id="@+id/labelPriority"
@@ -34,4 +43,5 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:src="@drawable/ic_priority" />
-</RelativeLayout>
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>
